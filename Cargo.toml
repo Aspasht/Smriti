@@ -1,0 +1,7 @@
+[workspace]
+members = ["crates/cli", "crates/database"]
+
+default-members = ["crates/cli"]
+
+[workspace.dependencies]
+rusqlite = "0.32.1"
