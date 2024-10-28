@@ -1,6 +1,6 @@
 use clap::Parser;
 use cli::{CliArgs, SmritiCli};
-use database::{create_conn, display_commands, insert_user};
+use database::{create_conn, display_by_type, display_commands, insert_command};
 use rusqlite::{Connection, Result};
 
 fn main() -> Result<()> {
@@ -11,7 +11,7 @@ fn main() -> Result<()> {
     match cli.command {
         CliArgs::Add(add_command) => {
             println!("Adding command: {:?}", add_command);
-            match insert_user(
+            match insert_command(
                 &conn,
                 add_command.command,
                 add_command.alias,
@@ -22,8 +22,16 @@ fn main() -> Result<()> {
                 Err(err) => eprintln!("Error inserting data: {}", err),
             }
         }
-        CliArgs::View(_view_command) => {
-            display_commands(&conn)?;
+        CliArgs::View(view_command) => {
+            if view_command.all {
+                display_commands(&conn)?;
+            } else if view_command.alias {
+                display_by_type(&conn, "alias".into())?;
+            } else if view_command.service {
+                display_by_type(&conn, "service".into())?;
+            } else {
+                println!("No valid options provided for view command");
+            }
         }
         _ => {
             println!("Command not implemented yet");

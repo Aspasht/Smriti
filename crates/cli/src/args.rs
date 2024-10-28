@@ -82,10 +82,10 @@ pub struct ViewCommand {
     /// Dispalys all saved commands
     #[arg(long)]
     pub all: bool,
-    /// Display saved commands by their alias
+    /// Display all available aliases
     #[arg(short, long)]
-    pub alias: Option<String>,
+    pub alias: bool,
     /// Display saved commands by their service
     #[arg(short, long)]
-    pub service: Option<String>,
+    pub service: bool,
 }

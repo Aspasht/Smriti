@@ -1,7 +1,7 @@
 use crate::models::Command;
 use rusqlite::{params, Connection, Result};
 
-pub fn insert_user(
+pub fn insert_command(
     conn: &Connection,
     command: String,
     alias: String,
@@ -16,8 +16,8 @@ pub fn insert_user(
 }
 
 pub fn display_commands(conn: &Connection) -> Result<(), rusqlite::Error> {
-    let mut data = conn.prepare("SELECT * FROM commands")?;
-    let data_iter = data.query_map([], |row| {
+    let mut stmt = conn.prepare("SELECT * FROM commands")?;
+    let data_iter = stmt.query_map([], |row| {
         Ok(Command {
             id: row.get(0)?,
             command: row.get(1)?,
@@ -27,8 +27,19 @@ pub fn display_commands(conn: &Connection) -> Result<(), rusqlite::Error> {
         })
     })?;
 
-    for person in data_iter {
-        println!("{:?}", person.unwrap());
+    for command in data_iter {
+        println!("{:?}", command.unwrap());
+    }
+    Ok(())
+}
+
+pub fn display_by_type(conn: &Connection, search_type: &str) -> Result<(), rusqlite::Error> {
+    let query = format!("SELECT {} FROM commands", search_type);
+    let mut stmt = conn.prepare(&query)?;
+    let data_iter = stmt.query_map([], |row| row.get::<_, String>(0))?;
+
+    for data in data_iter {
+        println!("{}", data.unwrap());
     }
     Ok(())
 }
