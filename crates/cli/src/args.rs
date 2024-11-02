@@ -28,7 +28,7 @@ pub enum CliArgs {
 
 #[derive(Debug, Args)]
 pub struct RunCommand {
-    #[arg(short, long)]
+    #[arg(value_name = "COMMAND")]
     pub command: String,
 }
 
