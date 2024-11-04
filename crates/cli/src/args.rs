@@ -28,8 +28,8 @@ pub enum CliArgs {
 
 #[derive(Debug, Args)]
 pub struct RunCommand {
-    #[arg(value_name = "COMMAND")]
-    pub command: String,
+    #[arg(value_name = "ALIAS")]
+    pub alias: String,
 }
 
 #[derive(Debug, Args)]

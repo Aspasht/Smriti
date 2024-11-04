@@ -29,7 +29,7 @@ fn main() -> Result<()> {
     let cli = SmritiCli::parse();
 
     match cli.command {
-        CliArgs::Run(arg) => match retrieve_command(&conn, &arg.command) {
+        CliArgs::Run(arg) => match retrieve_command(&conn, &arg.alias) {
             Ok(command) => {
                 println!("{}", command);
                 if let Err(e) = shell_executor::execute_command(&command) {

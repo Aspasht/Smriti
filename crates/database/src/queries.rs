@@ -20,7 +20,7 @@ pub fn display_commands(conn: &Connection) -> Result<Vec<Command>, rusqlite::Err
 
     let data_iter = stmt.query_map([], |row| {
         Ok(Command {
-            id: row.get(0)?, // Adjust indices to match database column order
+            id: row.get(0)?,
             command: row.get(1)?,
             alias: row.get(2)?,
             info: row.get(3)?,
@@ -34,23 +34,68 @@ pub fn display_commands(conn: &Connection) -> Result<Vec<Command>, rusqlite::Err
     Ok(commands)
 }
 
-pub fn display_by_type(conn: &Connection, search_type: &str) -> Result<(), rusqlite::Error> {
+pub fn display_by_type(
+    conn: &Connection,
+    search_type: &str,
+) -> Result<Vec<String>, rusqlite::Error> {
     let query = format!("SELECT {} FROM commands", search_type);
     let mut stmt = conn.prepare(&query)?;
-    let data_iter = stmt.query_map([], |row| row.get::<_, String>(0))?;
+    let data_iter = stmt.query_map([], |row| row.get(0))?;
 
-    for data in data_iter {
-        println!("{}", data.unwrap());
-    }
-    Ok(())
+    // Collect results into a Vec<String>
+    let results: Vec<String> = data_iter.filter_map(Result::ok).collect();
+
+    Ok(results)
 }
 
 pub fn retrieve_command(conn: &Connection, alias: &str) -> Result<String, rusqlite::Error> {
-    // Use a parameterized query to safely retrieve the command by alias
-    let query = "SELECT command FROM commands WHERE alias = ?";
+    let query = "SELECT command FROM commands WHERE alias = ?1";
     let mut stmt = conn.prepare(query)?;
 
-    // Use query_row to retrieve a single value based on the alias
-    stmt.query_row([alias], |row| row.get::<_, String>(0))
-        .map_err(|e| e) // Map the error to the Result's type
+    // Use `query_row` with `optional` to return `Option<String>`
+    let result = stmt.query_row([alias], |row| row.get(0))?;
+
+    Ok(result) // Returns Some(command) if found, or None if no match
+}
+
+pub fn retrieve_command_by_alias(
+    conn: &Connection,
+    alias: &str,
+) -> Result<Command, rusqlite::Error> {
+    let query = "SELECT id, command, alias, info, service FROM commands WHERE alias = ?1";
+    let mut stmt = conn.prepare(query)?;
+    let command = stmt.query_row([alias], |row| {
+        Ok(Command {
+            id: row.get(0)?,
+            command: row.get(1)?,
+            alias: row.get(2)?,
+            info: row.get(3)?,
+            service: row.get(4)?,
+        })
+    })?;
+
+    Ok(command)
+}
+
+pub fn retrieve_commands_by_service(
+    conn: &Connection,
+    service: &str,
+) -> Result<Vec<Command>, rusqlite::Error> {
+    let query = "SELECT id, command, alias, info, service FROM commands WHERE service = ?1";
+    let mut stmt = conn.prepare(query)?;
+
+    let data_iter = stmt.query_map([service], |row| {
+        Ok(Command {
+            id: row.get(0)?,
+            command: row.get(1)?,
+            alias: row.get(2)?,
+            info: row.get(3)?,
+            service: row.get(4)?,
+        })
+    })?;
+
+    // Collect the iterator into a Vec<Command>
+    let commands: Vec<Command> = data_iter.filter_map(Result::ok).collect();
+
+    Ok(commands)
 }

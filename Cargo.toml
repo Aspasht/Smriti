@@ -7,3 +7,4 @@ default-members = ["crates/cli"]
 [workspace.dependencies]
 rusqlite = "0.32.1"
 subprocess = "0.2"
+dirs = "5.0"
