@@ -12,18 +12,18 @@ pub struct SmritiCli {
 
 #[derive(Debug, Subcommand)]
 pub enum CliArgs {
-    /// Execute a command
+    /// Execute a saved command.
     Run(RunCommand),
-    /// Add a command to save
+    /// Add a new command to the saved list.
     Add(AddCommand),
-    /// Deletes existing commands,aliases or groups
+    /// Remove an existing command, alias, or group.
     Delete(DeleteCommand),
-    /// Updates existing commands,aliases or groups
+    /// Modify an existing command, alias, or group.
     Update(UpdateCommand),
-    /// Display a list of existing commands,aliases or groups
+    /// Display a list of all saved commands, aliases, or groups.
     View(ViewCommand),
-    // Search commands based on types, alias or regex
-    // Search(SearchCommand),
+    /// Find the command associated with a specific alias or service.
+    Search(SearchCommand),
 }
 
 #[derive(Debug, Args)]
@@ -88,4 +88,14 @@ pub struct ViewCommand {
     /// Display saved commands by their service
     #[arg(short, long)]
     pub service: bool,
+}
+
+#[derive(Debug, Args)]
+pub struct SearchCommand {
+    /// Search by alias
+    #[arg(long, short)]
+    pub alias: Option<String>,
+    /// Search by service
+    #[arg(long, short)]
+    pub service: Option<String>,
 }
