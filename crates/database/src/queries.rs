@@ -3,10 +3,10 @@ use rusqlite::{params, Connection, Result};
 
 pub fn insert_command(
     conn: &Connection,
-    command: String,
-    alias: String,
-    info: String,
-    service: String,
+    command: &str,
+    alias: &str,
+    info: &str,
+    service: &str,
 ) -> Result<(), rusqlite::Error> {
     conn.execute(
         "INSERT INTO commands (command, alias, info, service) VALUES (?1, ?2, ?3, ?4)",

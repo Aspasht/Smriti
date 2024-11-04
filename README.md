@@ -23,7 +23,7 @@ git clone https://github.com/Aspasht/Smriti.git
 cd Smriti
 # Compile or install as necessary (instructions may vary)
 cargo build --release
-    sudo mv target/release/smriti /usr/local/bin/smriti
+sudo mv target/release/smriti /usr/local/bin/smriti
 ```
 
 ## Usage

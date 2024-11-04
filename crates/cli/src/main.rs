@@ -40,15 +40,37 @@ fn main() -> Result<()> {
         },
 
         CliArgs::Add(add_command) => {
-            println!("Adding command: {:?}", add_command);
+            let add_args = &add_command;
             match insert_command(
                 &conn,
-                add_command.command,
-                add_command.alias,
-                add_command.info.unwrap(),
-                add_command.service,
+                &add_args.command,
+                &add_args.alias,
+                add_args.info.as_ref().unwrap(),
+                &add_args.service,
             ) {
-                Ok(()) => println!("Saved successfully!"),
+                Ok(()) => {
+                    match retrieve_command_by_alias(&conn, &add_args.alias) {
+                        Ok(command) => {
+                            let mut table = vec![];
+                            table.push(vec![
+                                command.id.cell(),
+                                command.alias.cell(),
+                                command.command.cell(),
+                                command.info.cell(),
+                                command.service.cell(),
+                            ]);
+                            let table_display = create_table_header(table);
+                            println!("{}", table_display);
+                        }
+                        Err(e) => {
+                            eprintln!(
+                                "Error retrieving command: {} \nNo command associated with alias: {:?}",
+                                e, &add_args.alias
+                            );
+                        }
+                    }
+                    println!("Saved successfully!")
+                }
                 Err(err) => eprintln!("Error inserting data: {}", err),
             }
         }
