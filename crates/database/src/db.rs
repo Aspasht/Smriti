@@ -5,7 +5,7 @@ use std::path::PathBuf;
 pub fn create_conn() -> Result<Connection> {
     // get user home directory
     let mut db_path = home_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("smriti.db");
+    db_path.push(".smriti.db");
 
     let conn = Connection::open(db_path)?;
 
