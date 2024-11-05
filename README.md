@@ -1,5 +1,7 @@
 # Smriti
 
+## Keep track of the commands your memory missed.
+
 Smriti is a command-line interface (CLI) tool that supercharges your terminal by helping you save, organize, and execute commands like a pro. Tired of typing out long commands or remembering complex bash aliases? This tool makes managing your go-to commands easy, memorable, and portable!
 
 ## Features
