@@ -50,22 +50,19 @@ pub struct AddCommand {
 
 #[derive(Debug, Args)]
 pub struct DeleteCommand {
-    /// Deletes existing command
-    #[arg(short, long)]
-    pub command: String,
     /// Deletes existing command by their alias
     #[arg(short, long)]
-    pub alias: String,
+    pub alias: Option<String>,
     /// Deletes serviceed command
     #[arg(short, long)]
-    pub service: String,
+    pub service: Option<String>,
 }
 
 #[derive(Debug, Args)]
 pub struct UpdateCommand {
     /// Update existing commands
     #[arg(short, long)]
-    pub command: String,
+    pub command: Option<String>,
     /// Updating existing command alias
     #[arg(short, long)]
     pub alias: String,
@@ -74,7 +71,7 @@ pub struct UpdateCommand {
     pub info: Option<String>, // Optional, update only if provided
     /// Update command service
     #[arg(short, long)]
-    pub service: String,
+    pub service: Option<String>,
 }
 
 #[derive(Debug, Args)]

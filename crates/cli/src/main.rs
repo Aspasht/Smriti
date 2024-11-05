@@ -1,8 +1,9 @@
 use clap::Parser;
 use cli::{CliArgs, SmritiCli};
 use database::{
-    create_conn, display_by_type, display_commands, insert_command, retrieve_command,
-    retrieve_command_by_alias, retrieve_commands_by_service,
+    create_conn, delete_by_alias, delete_by_service, display_by_type, display_commands,
+    insert_command, retrieve_command, retrieve_command_by_alias, retrieve_commands_by_service,
+    update_command_by_alias, update_info_by_alias, update_service_by_alias,
 };
 use rusqlite::{Connection, Result};
 mod shell_executor;
@@ -223,10 +224,157 @@ fn main() -> Result<()> {
             }
         }
 
-        _ => {
-            println!("{}", format!("Command not implemented yet").red());
-            // default logic or placeholder for other commands}
+        CliArgs::Delete(delete_command) => {
+            if delete_command.alias.is_some() || delete_command.service.is_some() {
+                if let Some(ref alias) = delete_command.alias {
+                    match delete_by_alias(&conn, alias) {
+                        Ok(()) => {
+                            println!(
+                                "Commands associated with {} alias is  deleted from the database",
+                                alias
+                            )
+                        }
+                        Err(e) => {
+                            println!(
+                                "{}",
+                                format!("{}\n Couldn't delete command with alias {}", e, alias)
+                                    .red()
+                            );
+                        }
+                    }
+                }
+
+                if let Some(ref service) = delete_command.service {
+                    match delete_by_service(&conn, service) {
+                        Ok(()) => {
+                            println!(
+                                "Commands associated with {} service were deleted from the database",
+                                service
+                            )
+                        }
+                        Err(e) => {
+                            println!(
+                                "{}",
+                                format!("{}\n Couldn't delete command with {} service", e, service)
+                                    .red()
+                            );
+                        }
+                    }
+                }
+            }
         }
+
+        CliArgs::Update(update_command) => {
+            if !update_command.alias.is_empty() {
+                if update_command.command.is_some()
+                    || update_command.info.is_some()
+                    || update_command.service.is_some()
+                {
+                    if let Some(ref command) = update_command.command {
+                        match update_command_by_alias(&conn, &update_command.alias, command) {
+                            Ok(()) => match retrieve_command_by_alias(&conn, &update_command.alias)
+                            {
+                                Ok(command) => {
+                                    let mut table = vec![];
+                                    table.push(vec![
+                                        command.id.cell(),
+                                        command.alias.cell(),
+                                        command.command.cell(),
+                                        command.info.cell(),
+                                        command.service.cell(),
+                                    ]);
+                                    let table_display = create_table_header(table);
+                                    println!("{}", table_display);
+                                }
+                                Err(e) => {
+                                    eprintln!(
+                                            "Error retrieving command: {} \nNo command associated with alias: {:?}",
+                                            e, &update_command.alias
+                                        );
+                                }
+                            },
+                            Err(e) => {
+                                println!(
+                                    "{}",
+                                    format!("{}\n Couldn't update at the moment", e).red()
+                                );
+                            }
+                        }
+                    }
+
+                    if let Some(ref service) = update_command.service {
+                        match update_service_by_alias(&conn, &update_command.alias, service) {
+                            Ok(()) => {
+                                match retrieve_command_by_alias(&conn, &update_command.alias) {
+                                    Ok(command) => {
+                                        let mut table = vec![];
+                                        table.push(vec![
+                                            command.id.cell(),
+                                            command.alias.cell(),
+                                            command.command.cell(),
+                                            command.info.cell(),
+                                            command.service.cell(),
+                                        ]);
+                                        let table_display = create_table_header(table);
+                                        println!("{}", table_display);
+                                    }
+                                    Err(e) => {
+                                        eprintln!(
+                                            "Error retrieving command: {} \nNo command associated with alias: {:?}",
+                                            e, &update_command.alias
+                                        );
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                println!(
+                                    "{}",
+                                    format!("{}\n Couldn't update at the moment", e).red()
+                                );
+                            }
+                        }
+                    }
+
+                    if let Some(ref info) = update_command.info {
+                        match update_info_by_alias(&conn, &update_command.alias, info) {
+                            Ok(()) => {
+                                match retrieve_command_by_alias(&conn, &update_command.alias) {
+                                    Ok(command) => {
+                                        let mut table = vec![];
+                                        table.push(vec![
+                                            command.id.cell(),
+                                            command.alias.cell(),
+                                            command.command.cell(),
+                                            command.info.cell(),
+                                            command.service.cell(),
+                                        ]);
+                                        let table_display = create_table_header(table);
+                                        println!("{}", table_display);
+                                    }
+                                    Err(e) => {
+                                        eprintln!(
+                                            "Error retrieving command: {} \nNo command associated with alias: {:?}",
+                                            e, &update_command.alias
+                                        );
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                println!(
+                                    "{}",
+                                    format!("{}\n Couldn't update at the moment", e).red()
+                                );
+                            }
+                        }
+                    }
+                }
+            } else {
+                println!("{}", format!("Required -a flag not provided").red());
+            }
+        } // _ => {
+          //     println!("{}", format!("Command not implemented yet").red());
+          //     // default logic or placeholder for other commands}
+          // }
     }
 
     Ok(())
