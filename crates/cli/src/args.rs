@@ -24,6 +24,8 @@ pub enum CliArgs {
     View(ViewCommand),
     /// Find the command associated with a specific alias or service.
     Search(SearchCommand),
+    /// Update an existing alias
+    Rename(RenameCommand),
 }
 
 #[derive(Debug, Args)]
@@ -53,7 +55,7 @@ pub struct DeleteCommand {
     /// Deletes existing command by their alias
     #[arg(short, long)]
     pub alias: Option<String>,
-    /// Deletes serviceed command
+    /// Removes all commands associated with a specific service.
     #[arg(short, long)]
     pub service: Option<String>,
 }
@@ -95,4 +97,10 @@ pub struct SearchCommand {
     /// Search by service
     #[arg(long, short)]
     pub service: Option<String>,
+}
+
+#[derive(Debug, Parser)]
+pub struct RenameCommand {
+    pub alias: String,
+    pub new_alias: String,
 }

@@ -141,3 +141,9 @@ pub fn update_info_by_alias(
     conn.execute(query, &[alias, value])?;
     Ok(())
 }
+
+pub fn rename_alias(conn: &Connection, alias: &str, value: &str) -> Result<(), rusqlite::Error> {
+    let query = "UPDATE commands SET alias = ?2 WHERE alias = ?1";
+    conn.execute(query, &[alias, value])?;
+    Ok(())
+}

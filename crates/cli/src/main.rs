@@ -2,13 +2,17 @@ use clap::Parser;
 use cli::{CliArgs, SmritiCli};
 use database::{
     create_conn, delete_by_alias, delete_by_service, display_by_type, display_commands,
-    insert_command, retrieve_command, retrieve_command_by_alias, retrieve_commands_by_service,
-    update_command_by_alias, update_info_by_alias, update_service_by_alias,
+    insert_command, rename_alias, retrieve_command, retrieve_command_by_alias,
+    retrieve_commands_by_service, update_command_by_alias, update_info_by_alias,
+    update_service_by_alias,
 };
 use rusqlite::{Connection, Result};
 mod shell_executor;
 use cli_table::{Cell, CellStruct, Style, Table, TableDisplay};
 use colored::Colorize;
+
+#[cfg(test)]
+mod main_test;
 
 pub fn create_table_header(table: Vec<Vec<CellStruct>>) -> TableDisplay {
     table
@@ -34,10 +38,10 @@ fn main() -> Result<()> {
             Ok(command) => {
                 println!("{}", command);
                 if let Err(e) = shell_executor::execute_command(&command) {
-                    eprintln!("Error executing command: {}", e);
+                    eprintln!("{}", format!("Error executing command: {}", e).red());
                 }
             }
-            Err(e) => eprintln!("Error retrieving command: {}", e),
+            Err(err) => eprintln!("{}", format!("Error retrieving command: {}", err).red()),
         },
 
         CliArgs::Add(add_command) => {
@@ -64,15 +68,18 @@ fn main() -> Result<()> {
                             println!("{}", table_display);
                         }
                         Err(e) => {
-                            eprintln!(
+                            eprintln!("{}",format!(
                                 "Error retrieving command: {} \nNo command associated with alias: {:?}",
-                                e, &add_args.alias
+                                e, &add_args.alias).red()
                             );
                         }
                     }
                     println!("Saved successfully!")
                 }
-                Err(err) => eprintln!("Error inserting data: {}", err),
+                Err(err) => eprintln!(
+                    "Error inserting data: {} ",
+                    format!("{} \n Note: Command and Alias must be unique", err).red()
+                ),
             }
         }
 
@@ -95,7 +102,7 @@ fn main() -> Result<()> {
 
                         println!("{}", table_display);
                     }
-                    Err(err) => eprintln!("Error: {}", err),
+                    Err(err) => eprintln!("{}", format!("{}", err).red()),
                 }
             } else if view_command.alias {
                 match display_by_type(&conn, "alias") {
@@ -117,7 +124,7 @@ fn main() -> Result<()> {
 
                         println!("{}", table_display);
                     }
-                    Err(err) => eprintln!("Error: {}", err),
+                    Err(err) => eprintln!("{}", format!("{}", err).red()),
                 }
             } else if view_command.service {
                 match display_by_type(&conn, "service") {
@@ -165,9 +172,9 @@ fn main() -> Result<()> {
                             println!("{}", table_display);
                         }
                         Err(e) => {
-                            eprintln!(
+                            eprintln!("{}",format!(
                                 "Error retrieving command: {} \nNo command associated with alias: {:?}",
-                                e, alias
+                                e, alias).red()
                             );
                         }
                     }
@@ -287,9 +294,9 @@ fn main() -> Result<()> {
                                     println!("{}", table_display);
                                 }
                                 Err(e) => {
-                                    eprintln!(
+                                    eprintln!("{}",format!(
                                             "Error retrieving command: {} \nNo command associated with alias: {:?}",
-                                            e, &update_command.alias
+                                            e, &update_command.alias).red()
                                         );
                                 }
                             },
@@ -370,6 +377,45 @@ fn main() -> Result<()> {
                 }
             } else {
                 println!("{}", format!("Required -a flag not provided").red());
+            }
+        }
+
+        CliArgs::Rename(rename_command) => {
+            match rename_alias(&conn, &rename_command.alias, &rename_command.new_alias) {
+                Ok(()) => match retrieve_command_by_alias(&conn, &rename_command.new_alias) {
+                    Ok(command) => {
+                        let mut table = vec![];
+                        table.push(vec![
+                            command.id.cell(),
+                            command.alias.cell(),
+                            command.command.cell(),
+                            command.info.cell(),
+                            command.service.cell(),
+                        ]);
+                        let table_display = create_table_header(table);
+                        println!("{}", table_display);
+                    }
+                    Err(e) => {
+                        eprintln!(
+                            "{}",
+                            format!(
+                                "Error retrieving alias: {} \nNo alias found with the name: {:?}",
+                                e, &rename_command.new_alias
+                            )
+                            .red()
+                        );
+                    }
+                },
+                Err(e) => {
+                    println!(
+                        "{}",
+                        format!(
+                            "{}\n Unable to complete the rename process. Please verify your commands.",
+                            e
+                        )
+                        .red()
+                    );
+                }
             }
         } // _ => {
           //     println!("{}", format!("Command not implemented yet").red());
