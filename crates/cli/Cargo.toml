@@ -3,6 +3,8 @@ name = "cli"
 version = "0.1.0"
 edition = "2021"
 
+repository = "https://github.com/aspasht/smriti"
+
 [lib]
 name = "cli"
 path = "src/args.rs"
