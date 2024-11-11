@@ -12,6 +12,11 @@ Smriti is a command-line interface (CLI) tool that supercharges your terminal by
 - **Update and Delete Commands Easily**: Modify or remove commands as your workflow evolves.
 - **Portable Command Database**: Your commands are saved in an SQLite database, making it easy to transfer your whole command setup to another device. No need to reconfigure all your aliases each time!
 
+
+## Demo
+![demo](asset/smriti-demo.gif)
+
+
 ## Installation
 
 [Download binary release](https://github.com/Aspasht/Smriti/releases/tag/v0.1.0)
@@ -70,7 +75,7 @@ Execute it anytime by alias:
 
 4. **supports the use of placeholders**: Create using the {placeholder} syntax and dynamically by substituting them with specific values when the command is executed.
 ```
- > smriti add -a "nmapv" -c "nmap -sC -sV {ip}" -s "Network" -i "performs a version detection scan"
+> smriti add -a "nmapv" -c "nmap -sC -sV {ip}" -s "Network" -i "performs a version detection scan"
 > smriti run 192.168.0.0 //replace with the actual ip address
 ```
 
