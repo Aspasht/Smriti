@@ -22,8 +22,8 @@ pub enum CliArgs {
     Update(UpdateCommand),
     /// Display a list of all saved commands, aliases, or groups.
     View(ViewCommand),
-    /// Find the command associated with a specific alias or service.
-    Search(SearchCommand),
+    /// Find and display the command associated with a specific alias or service.
+    Show(ShowCommand),
     /// Update an existing alias
     Rename(RenameCommand),
 }
@@ -32,6 +32,8 @@ pub enum CliArgs {
 pub struct RunCommand {
     #[arg(value_name = "ALIAS")]
     pub alias: String,
+    #[arg(value_name = "VARIABLES")]
+    pub variables: Vec<String>,
 }
 
 #[derive(Debug, Args)]
@@ -90,7 +92,7 @@ pub struct ViewCommand {
 }
 
 #[derive(Debug, Args)]
-pub struct SearchCommand {
+pub struct ShowCommand {
     /// Search by alias
     #[arg(long, short)]
     pub alias: Option<String>,

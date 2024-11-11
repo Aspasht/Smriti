@@ -10,6 +10,7 @@ use rusqlite::{Connection, Result};
 mod shell_executor;
 use cli_table::{Cell, CellStruct, Style, Table, TableDisplay};
 use colored::Colorize;
+use shell_executor::replace_placeholder;
 
 #[cfg(test)]
 mod main_test;
@@ -35,12 +36,19 @@ fn main() -> Result<()> {
 
     match cli.command {
         CliArgs::Run(arg) => match retrieve_command(&conn, &arg.alias) {
-            Ok(command) => {
-                println!("{}", command);
-                if let Err(e) = shell_executor::execute_command(&command) {
-                    eprintln!("{}", format!("Error executing command: {}", e).red());
+            Ok(command) => match replace_placeholder(&command, arg.variables) {
+                Ok(modified_command) => {
+                    if let Err(e) = shell_executor::execute_command(modified_command) {
+                        eprintln!(
+                            "{}",
+                            format!("Error executing command: check variables passed {}", e).red()
+                        );
+                    }
                 }
-            }
+                Err(err) => {
+                    eprintln!("{}", format!("Error retrieving command: {}", err).red())
+                }
+            },
             Err(err) => eprintln!("{}", format!("Error retrieving command: {}", err).red()),
         },
 
@@ -153,7 +161,7 @@ fn main() -> Result<()> {
             }
         }
 
-        CliArgs::Search(show_command) => {
+        CliArgs::Show(show_command) => {
             // Check if at least one of the options is provided
             if show_command.alias.is_some() || show_command.service.is_some() {
                 // Handle alias if provided
