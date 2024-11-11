@@ -14,7 +14,7 @@ Smriti is a command-line interface (CLI) tool that supercharges your terminal by
 
 
 ## Demo
-![demo](asset/smriti-demo.gif)
+![demo](assets/smriti-demo.gif)
 
 
 ## Installation
