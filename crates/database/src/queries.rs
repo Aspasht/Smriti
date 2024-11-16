@@ -102,13 +102,13 @@ pub fn retrieve_commands_by_service(
 
 pub fn delete_by_alias(conn: &Connection, alias: &str) -> Result<(), rusqlite::Error> {
     let query = "DELETE FROM commands WHERE alias = ?1";
-    conn.execute(query, &[alias])?;
+    conn.execute(query, [alias])?;
     Ok(())
 }
 
 pub fn delete_by_service(conn: &Connection, service: &str) -> Result<(), rusqlite::Error> {
     let query = "DELETE FROM commands WHERE service = ?1";
-    conn.execute(query, &[service])?;
+    conn.execute(query, [service])?;
     Ok(())
 }
 
@@ -118,7 +118,7 @@ pub fn update_command_by_alias(
     value: &str,
 ) -> Result<(), rusqlite::Error> {
     let query = "UPDATE commands SET command = ?2 WHERE alias = ?1";
-    conn.execute(query, &[alias, value])?;
+    conn.execute(query, [alias, value])?;
     Ok(())
 }
 
@@ -128,7 +128,7 @@ pub fn update_service_by_alias(
     value: &str,
 ) -> Result<(), rusqlite::Error> {
     let query = "UPDATE commands SET service = ?2 WHERE alias = ?1";
-    conn.execute(query, &[alias, value])?;
+    conn.execute(query, [alias, value])?;
     Ok(())
 }
 
@@ -138,12 +138,12 @@ pub fn update_info_by_alias(
     value: &str,
 ) -> Result<(), rusqlite::Error> {
     let query = "UPDATE commands SET info = ?2 WHERE alias = ?1";
-    conn.execute(query, &[alias, value])?;
+    conn.execute(query, [alias, value])?;
     Ok(())
 }
 
 pub fn rename_alias(conn: &Connection, alias: &str, value: &str) -> Result<(), rusqlite::Error> {
     let query = "UPDATE commands SET alias = ?2 WHERE alias = ?1";
-    conn.execute(query, &[alias, value])?;
+    conn.execute(query, [alias, value])?;
     Ok(())
 }
