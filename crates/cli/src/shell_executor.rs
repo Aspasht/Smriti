@@ -47,7 +47,7 @@ pub fn replace_placeholder(command: &str, args: Vec<String>) -> Result<String, B
 
 #[allow(dead_code)]
 pub fn execute_command(command: String) -> Result<(), Box<dyn Error>> {
-    println!("{}", format!("{}", command).green());
+    println!("{}", command.green());
     let result = Exec::shell(command)
         .stdout(Redirection::Pipe) // Pipe stdout to capture output
         .stderr(Redirection::Pipe) // Pipe stderr to capture errors

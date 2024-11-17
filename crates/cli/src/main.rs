@@ -64,14 +64,13 @@ fn main() -> Result<()> {
                 Ok(()) => {
                     match retrieve_command_by_alias(&conn, &add_args.alias) {
                         Ok(command) => {
-                            let mut table = vec![];
-                            table.push(vec![
+                            let table = vec![vec![
                                 command.id.cell(),
                                 command.alias.cell(),
                                 command.command.cell(),
                                 command.info.cell(),
                                 command.service.cell(),
-                            ]);
+                            ]];
                             let table_display = create_table_header(table);
                             println!("{}", table_display);
                         }
@@ -168,14 +167,13 @@ fn main() -> Result<()> {
                 if let Some(ref alias) = show_command.alias {
                     match retrieve_command_by_alias(&conn, alias) {
                         Ok(command) => {
-                            let mut table = vec![];
-                            table.push(vec![
+                            let table = vec![vec![
                                 command.id.cell(),
                                 command.alias.cell(),
                                 command.command.cell(),
                                 command.info.cell(),
                                 command.service.cell(),
-                            ]);
+                            ]];
                             let table_display = create_table_header(table);
                             println!("{}", table_display);
                         }
@@ -234,7 +232,7 @@ fn main() -> Result<()> {
             } else {
                 println!(
                     "{}",
-                    format!("No valid options provided for view command. Please provide either --alias or --service.").red()
+                    "No valid options provided for view command. Please provide either --alias or --service.".red()
                 );
             }
         }
@@ -290,14 +288,13 @@ fn main() -> Result<()> {
                             Ok(()) => match retrieve_command_by_alias(&conn, &update_command.alias)
                             {
                                 Ok(command) => {
-                                    let mut table = vec![];
-                                    table.push(vec![
+                                    let table = vec![vec![
                                         command.id.cell(),
                                         command.alias.cell(),
                                         command.command.cell(),
                                         command.info.cell(),
                                         command.service.cell(),
-                                    ]);
+                                    ]];
                                     let table_display = create_table_header(table);
                                     println!("{}", table_display);
                                 }
@@ -322,14 +319,13 @@ fn main() -> Result<()> {
                             Ok(()) => {
                                 match retrieve_command_by_alias(&conn, &update_command.alias) {
                                     Ok(command) => {
-                                        let mut table = vec![];
-                                        table.push(vec![
+                                        let table = vec![vec![
                                             command.id.cell(),
                                             command.alias.cell(),
                                             command.command.cell(),
                                             command.info.cell(),
                                             command.service.cell(),
-                                        ]);
+                                        ]];
                                         let table_display = create_table_header(table);
                                         println!("{}", table_display);
                                     }
@@ -355,14 +351,13 @@ fn main() -> Result<()> {
                             Ok(()) => {
                                 match retrieve_command_by_alias(&conn, &update_command.alias) {
                                     Ok(command) => {
-                                        let mut table = vec![];
-                                        table.push(vec![
+                                        let table = vec![vec![
                                             command.id.cell(),
                                             command.alias.cell(),
                                             command.command.cell(),
                                             command.info.cell(),
                                             command.service.cell(),
-                                        ]);
+                                        ]];
                                         let table_display = create_table_header(table);
                                         println!("{}", table_display);
                                     }
@@ -384,7 +379,7 @@ fn main() -> Result<()> {
                     }
                 }
             } else {
-                println!("{}", format!("Required -a flag not provided").red());
+                println!("{}", "Required -a flag not provided".red());
             }
         }
 
@@ -392,14 +387,13 @@ fn main() -> Result<()> {
             match rename_alias(&conn, &rename_command.alias, &rename_command.new_alias) {
                 Ok(()) => match retrieve_command_by_alias(&conn, &rename_command.new_alias) {
                     Ok(command) => {
-                        let mut table = vec![];
-                        table.push(vec![
+                        let table = vec![vec![
                             command.id.cell(),
                             command.alias.cell(),
                             command.command.cell(),
                             command.info.cell(),
                             command.service.cell(),
-                        ]);
+                        ]];
                         let table_display = create_table_header(table);
                         println!("{}", table_display);
                     }
