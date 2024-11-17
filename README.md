@@ -19,7 +19,26 @@ Smriti is a command-line interface (CLI) tool that supercharges your terminal by
 
 ## Installation
 
-[Download binary release](https://github.com/Aspasht/Smriti/releases/tag/v0.1.0)
+### Arch Linux
+There are 2 different [AUR](https://aur.archlinux.org) packages available:
+
+- [smriti](https://aur.archlinux.org/packages/smriti) - Latest release built from source
+- [smriti-bin](https://aur.archlinux.org/packages/smriti-bin) - Latest release in binary form
+
+Install the preferred package with:
+```bash
+git clone https://aur.archlinux.org/<package>.git
+cd <package>
+makepkg -si
+```
+
+Or, if you're using an [AUR Helper](https://wiki.archlinux.org/title/AUR_helpers), it's even simpler (using [paru](https://github.com/Morganamilo/paru) as an example):
+```bash
+paru -S <package>
+```
+
+### Other
+[Download the binary release](https://github.com/Aspasht/Smriti/releases/tag/v0.1.0)
 
 or
 
